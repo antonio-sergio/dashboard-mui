@@ -11,39 +11,32 @@ import HighlightedCard from './HighlightedCard';
 import PageViewsBarChart from './PageViewsBarChart';
 import SessionsChart from './SessionsChart';
 import StatCard, { StatCardProps } from './StatCard';
+import LiveAlerts from './CustomizedDataGrid';
 
 const data: StatCardProps[] = [
   {
-    title: 'Users',
-    value: '14k',
-    interval: 'Last 30 days',
+    title: 'Pacientes internados',
+    value: '128',
+    interval: 'Últimas 24h',
     trend: 'up',
-    data: [
-      200, 24, 220, 260, 240, 380, 100, 240, 280, 240, 300, 340, 320, 360, 340, 380,
-      360, 400, 380, 420, 400, 640, 340, 460, 440, 480, 460, 600, 880, 920,
-    ],
+    data: [100, 105, 110, 120, 125, 128, 130, 128, 126, 124, 122, 120, 118, 115, 113, 110, 108, 106, 104, 102, 100, 98, 95, 92, 90, 88, 86, 84, 82, 80],
   },
   {
-    title: 'Conversions',
-    value: '325',
-    interval: 'Last 30 days',
-    trend: 'down',
-    data: [
-      1640, 1250, 970, 1130, 1050, 900, 720, 1080, 900, 450, 920, 820, 840, 600, 820,
-      780, 800, 760, 380, 740, 660, 620, 840, 500, 520, 480, 400, 360, 300, 220,
-    ],
-  },
-  {
-    title: 'Event count',
-    value: '200k',
-    interval: 'Last 30 days',
+    title: 'Alertas clínicos',
+    value: '32',
+    interval: 'Últimas 24h',
     trend: 'neutral',
-    data: [
-      500, 400, 510, 530, 520, 600, 530, 520, 510, 730, 520, 510, 530, 620, 510, 530,
-      520, 410, 530, 520, 610, 530, 520, 610, 530, 420, 510, 430, 520, 510,
-    ],
+    data: [10, 12, 15, 17, 18, 20, 22, 24, 26, 28, 29, 30, 30, 31, 32, 32, 32, 32, 32, 32, 30, 28, 25, 20, 18, 16, 14, 12, 10, 9],
+  },
+  {
+    title: 'Taxa de ocupação',
+    value: '98%',
+    interval: 'Última semana',
+    trend: 'down',
+    data: [85, 86, 88, 89, 90, 92, 91, 90, 89, 91, 92, 92, 92, 91, 90, 89, 90, 91, 92, 92, 91, 92, 93, 94, 92, 91, 90, 91, 92, 98],
   },
 ];
+
 
 export default function MainGrid() {
   return (
@@ -64,30 +57,31 @@ export default function MainGrid() {
           </Grid>
         ))}
         <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+
           <HighlightedCard />
         </Grid>
+
         <Grid size={{ xs: 12, md: 6 }}>
           <SessionsChart />
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
           <PageViewsBarChart />
         </Grid>
+
       </Grid>
-      <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
-        Details
-      </Typography>
+     
       <Grid container spacing={2} columns={12}>
-        <Grid size={{ xs: 12, lg: 9 }}>
-          <CustomizedDataGrid />
-        </Grid>
-        <Grid size={{ xs: 12, lg: 3 }}>
-          <Stack gap={2} direction={{ xs: 'column', sm: 'row', lg: 'column' }}>
-            <CustomizedTreeView />
-            <ChartUserByCountry />
+        <Grid size={{ xs: 12, lg: 6 }}>
+          <Stack gap={2} direction={{ xs: 'row', sm: 'row', lg: 'row' }}>
+            {/* <CustomizedTreeView /> */}
+            {/* <ChartUserByCountry /> */}
           </Stack>
         </Grid>
+        <Grid size={{ xs: 12, lg: 9 }}>
+          <LiveAlerts />
+        </Grid>
       </Grid>
-      <Copyright sx={{ my: 4 }} />
+      <Copyright  />
     </Box>
   );
 }

@@ -22,10 +22,10 @@ export default function HighlightedCard() {
           gutterBottom
           sx={{ fontWeight: '600' }}
         >
-          Explore your data
+          Visualize os dados críticos
         </Typography>
         <Typography sx={{ color: 'text.secondary', mb: '8px' }}>
-          Uncover performance and visitor insights with our data wizardry.
+          Acesse insights sobre pacientes críticos, alertas ativos e desempenho dos setores.
         </Typography>
         <Button
           variant="contained"
@@ -34,8 +34,9 @@ export default function HighlightedCard() {
           endIcon={<ChevronRightRoundedIcon />}
           fullWidth={isSmallScreen}
         >
-          Get insights
+          Ver painel clínico
         </Button>
+
       </CardContent>
     </Card>
   );

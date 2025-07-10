@@ -26,7 +26,7 @@ const xThemeComponents = {
   ...treeViewCustomizations,
 };
 
-export default function Dashboard(props: { disableCustomTheme?: boolean }) {
+export default function Dashboard(props: { disableCustomTheme?: boolean, children?: React.ReactNode }) {
   return (
     <AppTheme {...props} themeComponents={xThemeComponents}>
       <CssBaseline enableColorScheme />
@@ -54,7 +54,8 @@ export default function Dashboard(props: { disableCustomTheme?: boolean }) {
             }}
           >
             <Header />
-            <MainGrid />
+             {props.children}
+            {/* <MainGrid /> */}
           </Stack>
         </Box>
       </Box>

@@ -31,44 +31,28 @@ type ExtendedTreeItemProps = {
 const ITEMS: TreeViewBaseItem<ExtendedTreeItemProps>[] = [
   {
     id: '1',
-    label: 'Website',
+    label: 'Unidades de Atendimento',
     children: [
-      { id: '1.1', label: 'Home', color: 'green' },
-      { id: '1.2', label: 'Pricing', color: 'green' },
-      { id: '1.3', label: 'About us', color: 'green' },
+      { id: '1.1', label: 'UTI Adulto', color: 'green' },
+      { id: '1.2', label: 'UTI Neonatal', color: 'green' },
+      { id: '1.3', label: 'Emergência', color: 'green' },
       {
         id: '1.4',
-        label: 'Blog',
+        label: 'Ambulatório',
         children: [
-          { id: '1.1.1', label: 'Announcements', color: 'blue' },
-          { id: '1.1.2', label: 'April lookahead', color: 'blue' },
-          { id: '1.1.3', label: "What's new", color: 'blue' },
-          { id: '1.1.4', label: 'Meet the team', color: 'blue' },
+          { id: '1.4.1', label: 'Cardiologia', color: 'blue' },
+          { id: '1.4.2', label: 'Ortopedia', color: 'blue' },
+          { id: '1.4.3', label: 'Oncologia', color: 'blue' },
+          { id: '1.4.4', label: 'Pediatria', color: 'blue' },
         ],
       },
     ],
   },
-  {
-    id: '2',
-    label: 'Store',
-    children: [
-      { id: '2.1', label: 'All products', color: 'green' },
-      {
-        id: '2.2',
-        label: 'Categories',
-        children: [
-          { id: '2.2.1', label: 'Gadgets', color: 'blue' },
-          { id: '2.2.2', label: 'Phones', color: 'blue' },
-          { id: '2.2.3', label: 'Wearables', color: 'blue' },
-        ],
-      },
-      { id: '2.3', label: 'Bestsellers', color: 'green' },
-      { id: '2.4', label: 'Sales', color: 'green' },
-    ],
-  },
-  { id: '4', label: 'Contact', color: 'blue' },
-  { id: '5', label: 'Help', color: 'blue' },
+  { id: '2', label: 'Centro Cirúrgico', color: 'green' },
+  { id: '3', label: 'Diagnóstico por Imagem', color: 'green' },
+  { id: '4', label: 'Hemodiálise', color: 'blue' },
 ];
+
 
 function DotIcon({ color }: { color: string }) {
   return (
@@ -182,7 +166,7 @@ export default function CustomizedTreeView() {
     >
       <CardContent>
         <Typography component="h2" variant="subtitle2">
-          Product tree
+          Setores
         </Typography>
         <RichTreeView
           items={ITEMS}

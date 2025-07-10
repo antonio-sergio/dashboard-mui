@@ -59,11 +59,11 @@ export default function SelectContent() {
       <ListSubheader sx={{ pt: 0 }}>Production</ListSubheader>
       <MenuItem value="">
         <ListItemAvatar>
-          <Avatar alt="Sitemark web">
+          <Avatar alt="Hospital Geral">
             <DevicesRoundedIcon sx={{ fontSize: '1rem' }} />
           </Avatar>
         </ListItemAvatar>
-        <ListItemText primary="Sitemark-web" secondary="Web app" />
+        <ListItemText primary="Hospital Geral" secondary="Web app" />
       </MenuItem>
       <MenuItem value={10}>
         <ListItemAvatar>

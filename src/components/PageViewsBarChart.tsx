@@ -7,18 +7,19 @@ import Stack from '@mui/material/Stack';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { useTheme } from '@mui/material/styles';
 
-export default function PageViewsBarChart() {
+export default function CriticalAlertsBarChart() {
   const theme = useTheme();
   const colorPalette = [
-    (theme.vars || theme).palette.primary.dark,
-    (theme.vars || theme).palette.primary.main,
-    (theme.vars || theme).palette.primary.light,
+    theme.palette.error.dark,
+    theme.palette.error.main,
+    theme.palette.error.light,
   ];
+
   return (
     <Card variant="outlined" sx={{ width: '100%' }}>
       <CardContent>
         <Typography component="h2" variant="subtitle2" gutterBottom>
-          Page views and downloads
+          Alertas Críticos por Setor
         </Typography>
         <Stack sx={{ justifyContent: 'space-between' }}>
           <Stack
@@ -30,12 +31,12 @@ export default function PageViewsBarChart() {
             }}
           >
             <Typography variant="h4" component="p">
-              1.3M
+              3.245
             </Typography>
-            <Chip size="small" color="error" label="-8%" />
+            <Chip size="small" color="error" label="+12%" />
           </Stack>
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-            Page views and downloads for the last 6 months
+            Total de alertas críticos nos últimos 6 meses
           </Typography>
         </Stack>
         <BarChart
@@ -45,29 +46,29 @@ export default function PageViewsBarChart() {
             {
               scaleType: 'band',
               categoryGapRatio: 0.5,
-              data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+              data: ['Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago'],
               height: 24,
             },
           ]}
           yAxis={[{ width: 50 }]}
           series={[
             {
-              id: 'page-views',
-              label: 'Page views',
-              data: [2234, 3872, 2998, 4125, 3357, 2789, 2998],
-              stack: 'A',
+              id: 'uti',
+              label: 'UTI',
+              data: [320, 400, 450, 500, 520, 600],
+              stack: 'total',
             },
             {
-              id: 'downloads',
-              label: 'Downloads',
-              data: [3098, 4215, 2384, 2101, 4752, 3593, 2384],
-              stack: 'A',
+              id: 'emergencia',
+              label: 'Emergência',
+              data: [290, 310, 330, 400, 410, 450],
+              stack: 'total',
             },
             {
-              id: 'conversions',
-              label: 'Conversions',
-              data: [4051, 2275, 3129, 4693, 3904, 2038, 2275],
-              stack: 'A',
+              id: 'enfermaria',
+              label: 'Enfermaria',
+              data: [200, 220, 240, 280, 290, 300],
+              stack: 'total',
             },
           ]}
           height={250}

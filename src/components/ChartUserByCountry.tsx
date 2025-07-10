@@ -17,38 +17,39 @@ import {
 } from '../internals/components/CustomIcons';
 
 const data = [
-  { label: 'India', value: 50000 },
-  { label: 'USA', value: 35000 },
-  { label: 'Brazil', value: 10000 },
-  { label: 'Other', value: 5000 },
+  { label: 'UTI', value: 40 },
+  { label: 'Pronto-Socorro', value: 35 },
+  { label: 'Enfermaria', value: 15 },
+  { label: 'Outros', value: 10 },
 ];
 
 const countries = [
   {
-    name: 'India',
-    value: 50,
-    flag: <IndiaFlag />,
+    name: 'UTI',
+    value: 40,
+    flag: <IndiaFlag />, // opcional
     color: 'hsl(220, 25%, 65%)',
   },
   {
-    name: 'USA',
+    name: 'Pronto-Socorro',
     value: 35,
     flag: <UsaFlag />,
     color: 'hsl(220, 25%, 45%)',
   },
   {
-    name: 'Brazil',
-    value: 10,
+    name: 'Enfermaria',
+    value: 15,
     flag: <BrazilFlag />,
     color: 'hsl(220, 25%, 30%)',
   },
   {
-    name: 'Other',
-    value: 5,
+    name: 'Outros',
+    value: 10,
     flag: <GlobeFlag />,
     color: 'hsl(220, 25%, 20%)',
   },
 ];
+
 
 interface StyledTextProps {
   variant: 'primary' | 'secondary';
@@ -129,7 +130,7 @@ export default function ChartUserByCountry() {
     >
       <CardContent>
         <Typography component="h2" variant="subtitle2">
-          Users by country
+          Paciente por estabelecimento
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <PieChart
@@ -153,7 +154,7 @@ export default function ChartUserByCountry() {
             width={260}
             hideLegend
           >
-            <PieCenterLabel primaryText="98.5K" secondaryText="Total" />
+            <PieCenterLabel primaryText="302" secondaryText="Total" />
           </PieChart>
         </Box>
         {countries.map((country, index) => (
