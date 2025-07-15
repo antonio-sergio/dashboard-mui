@@ -10,9 +10,9 @@ import {
     InputLabel,
     Select,
     MenuItem,
-    Chip,
+    // Chip, // Não utilizado neste snippet, mas pode manter se usar em outro lugar
 } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'; // Ícone para Voltar
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
@@ -24,16 +24,17 @@ import CakeIcon from '@mui/icons-material/Cake';
 import { green, red, amber, blue, grey, purple } from '@mui/material/colors';
 
 import ReactECharts from 'echarts-for-react';
+import * as echarts from 'echarts'; // Importe echarts diretamente para usar registerMap
 
-// --- Interfaces de Dados ---
+// --- Interfaces de Dados (manter as suas existentes) ---
 interface PacienteOncologicoData {
     id: string;
-    nome: string; // Para mock, não exibiremos, mas útil para simular dados
-    topo: string; // Topografia (ex: C50.9 - Mama, C61.9 - Próstata)
+    nome: string;
+    topo: string;
     estadiamento: 'I' | 'II' | 'III' | 'IV' | 'Não Estadiado';
     statusAtual: 'Vivo, com Câncer' | 'Vivo, SOE' | 'Óbito por Câncer' | 'Óbito por Outras Causas';
     tipoTratamentoPrincipal: 'Cirurgia' | 'Quimioterapia' | 'Radioterapia' | 'Hormonioterapia' | 'Outro' | 'Não Tratado';
-    dtDiagnostico: Date; // Usaremos Date objects para facilitar a filtragem
+    dtDiagnostico: Date;
     dtUltimaInfo: Date;
     teveRecidiva: boolean;
     idade: number;
@@ -55,7 +56,7 @@ interface AggregatedMetrics {
     tendenciaObitosMensal: { mes: string; count: number }[];
 }
 
-// --- Funções de Ajuda para Geração e Agregação de Dados Mock ---
+// --- Funções de Ajuda para Geração e Agregação de Dados Mock (manter as suas existentes) ---
 const generateMockPatients = (count: number): PacienteOncologicoData[] => {
     const patients: PacienteOncologicoData[] = [];
     const topographies = ['C50.9 - Mama', 'C61.9 - Próstata', 'C34.9 - Pulmão', 'C18.9 - Cólon', 'C44.9 - Pele', 'C16.9 - Estômago', 'C91-C95 - Leucemia', 'C25.9 - Pâncreas'];
@@ -127,8 +128,6 @@ const aggregateData = (patients: PacienteOncologicoData[], filterYear: number = 
         return acc;
     }, {} as Record<string, number>);
 
-
-    // Tendências Mensais
     const currentMonth = new Date().getMonth();
     const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
     const tendenciaDiagnosticosMensal = Array(12).fill(0).map((_, i) => ({ mes: months[i], count: 0 }));
@@ -143,7 +142,6 @@ const aggregateData = (patients: PacienteOncologicoData[], filterYear: number = 
         }
     });
 
-
     return {
         totalPacientesAtivos: activePatients.length,
         novosDiagnosticosAno: currentYearPatients.length,
@@ -155,33 +153,136 @@ const aggregateData = (patients: PacienteOncologicoData[], filterYear: number = 
         distribuicaoPorEstadiamento: Object.entries(estadiamentoCounts).map(([name, value]) => ({ name, value })),
         distribuicaoPorFaixaEtaria: Object.entries(faixaEtariaCounts).map(([name, value]) => ({ name, value })),
         distribuicaoPorTratamentoPrincipal: Object.entries(tratamentoCounts).map(([name, value]) => ({ name, value })),
-        tendenciaNovosDiagnosticosMensal: tendenciaDiagnosticosMensal.slice(0, currentMonth + 1), // Apenas até o mês atual
-        tendenciaObitosMensal: tendenciaObitosMensal.slice(0, currentMonth + 1), // Apenas até o mês atual
+        tendenciaNovosDiagnosticosMensal: tendenciaDiagnosticosMensal.slice(0, currentMonth + 1),
+        tendenciaObitosMensal: tendenciaObitosMensal.slice(0, currentMonth + 1),
     };
 };
+
+// Exemplo de como ficaria, com nomes hipotéticos da macrorregião de Franca
+const simulatedSPCitiesMapData = [
+    { name: 'Franca', value: 150 },
+    { name: 'Batatais', value: 70 },
+    { name: 'Ituverava', value: 45 },
+    { name: 'Orlândia', value: 30 },
+    { name: 'São Joaquim da Barra', value: 40 },
+    { name: 'Pedregulho', value: 20 },
+    { name: 'Igarapava', value: 25 },
+    { name: 'Patrocínio Paulista', value: 35 },
+    { name: 'Cristais Paulista', value: 15 },
+    { name: 'Restinga', value: 10 },
+    // Adicione todas as cidades da macrorregião aqui, com valores mockados
+    // CERTIFIQUE-SE DE QUE OS 'name' AQUI CORRESPONDAM AOS NOMES DOS MUNICÍPIOS NO SEU geojs-35-mun.json
+];
+
+
+const getSPCitiesMapOptions = (mapData) => ({
+  title: {
+    text: 'Distribuição de Casos de Câncer por Município (Estado de SP)',
+    left: 'center',
+    textStyle: {
+      color: '#E0E0E0' // Cor do título para modo escuro
+    }
+  },
+  tooltip: {
+    trigger: 'item',
+    formatter: '{b}<br/>Casos: {c}',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Fundo do tooltip mais escuro
+    textStyle: {
+      color: '#fff' // Texto do tooltip claro
+    }
+  },
+  visualMap: {
+    min: 0,
+    max: 1000,
+    left: 'left',
+    top: 'bottom',
+    text: ['Alto', 'Baixo'],
+    calculable: true,
+    inRange: {
+      // Gradiente de cores para modo escuro: do azul muito escuro para um azul escuro vibrante
+      color: ['#1A2B42', '#346590']
+    },
+    textStyle: {
+      color: '#E0E0E0' // Cor do texto do visualMap para modo escuro
+    }
+  },
+  series: [
+    {
+      name: 'Casos por Município',
+      type: 'map',
+      map: 'Estado de São Paulo', // O nome que você registrou o GeoJSON do estado
+      roam: true,
+      center: [-47.4, -20.5],
+      zoom: 7,
+      label: {
+        show: false, // Oculta rótulos por padrão
+        color: '#D0D0D0', // Cor do texto dos rótulos para modo escuro
+        formatter: '{b}',
+        fontSize: 9
+      },
+      emphasis: { // Estilo ao passar o mouse ou ao focar
+        label: {
+          show: true, // Mostra rótulo ao passar o mouse
+          color: '#FFF', // Cor do texto do rótulo em foco para modo escuro
+          fontSize: 12
+        },
+        itemStyle: {
+          areaColor: '#607D8B' // Cor de destaque ao passar o mouse (um cinza-azulado escuro)
+        }
+      },
+      itemStyle: {
+        borderColor: '#555', // Cor da borda entre os municípios (um cinza mais escuro)
+        borderWidth: 0.8,
+        areaColor: '#2C3E50' // Cor padrão de preenchimento dos municípios (azul petróleo escuro)
+      },
+      data: mapData,
+    }
+  ]
+});
 
 // --- Componente Dashboard ---
 export default function DashboardCancerInterativo() {
     const [loading, setLoading] = React.useState(true);
-    const [timeRange, setTimeRange] = React.useState('6months'); // Para filtros de tendência
+    const [timeRange, setTimeRange] = React.useState('6months');
+    const [mapRegistered, setMapRegistered] = React.useState(false); // Novo estado para o registro do mapa
 
-    // Dados mock e agregados
     const [allPatients, setAllPatients] = React.useState<PacienteOncologicoData[]>([]);
     const [aggregatedData, setAggregatedData] = React.useState<AggregatedMetrics | null>(null);
 
-    // Estados para drill-down
     const [selectedTopic, setSelectedTopic] = React.useState<'overview' | 'newDiagnoses' | 'topography' | 'estadiamento' | 'ageGroup' | 'treatment' | 'mortality' | 'remission'>('overview');
-    const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null); // Ex: "C50.9 - Mama", "Estágio II"
+    const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null);
 
     React.useEffect(() => {
-        // Simula o carregamento e geração dos dados
-        const timer = setTimeout(() => {
-            const patients = generateMockPatients(1550); // Gerar uma boa quantidade de pacientes
+        // Simula o carregamento e geração dos dados dos pacientes
+        const patientDataTimer = setTimeout(() => {
+            const patients = generateMockPatients(1550);
             setAllPatients(patients);
-            setAggregatedData(aggregateData(patients)); // Agrega dados iniciais
+            setAggregatedData(aggregateData(patients));
             setLoading(false);
         }, 1500);
-        return () => clearTimeout(timer);
+
+        // Carrega o GeoJSON e registra o mapa de Franca
+        // ATENÇÃO: Substitua '/caminho/para/seu/franca.geojson' pelo caminho real do seu arquivo.
+        // Este arquivo deve ser um GeoJSON válido para a cidade de Franca, SP.
+        fetch('public/assets/geojs-35-mun.json') // Ex: '/franca.geojson' se estiver na pasta public
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(geoJson => {
+                echarts.registerMap('Estado de São Paulo', geoJson);
+                console.log('GeoJSON de Franca registrado com sucesso!');
+                setMapRegistered(true);
+            })
+            .catch(error => {
+                console.error('Erro ao carregar ou registrar GeoJSON de Franca:', error);
+                // Você pode querer lidar com este erro na UI, por exemplo, não mostrar o mapa
+                // ou exibir uma mensagem de erro. Por simplicidade, continuaremos sem o mapa.
+            });
+
+        return () => clearTimeout(patientDataTimer);
     }, []);
 
     const handleGoBack = () => {
@@ -192,7 +293,6 @@ export default function DashboardCancerInterativo() {
         }
     };
 
-    // Filtra pacientes baseados na seleção de drill-down
     const getFilteredPatients = () => {
         let filtered = [...allPatients];
         const currentYear = new Date().getFullYear();
@@ -205,7 +305,7 @@ export default function DashboardCancerInterativo() {
             filtered = filtered.filter(p => p.statusAtual === 'Vivo, SOE' && !p.teveRecidiva && p.dtUltimaInfo.getFullYear() === currentYear);
         }
 
-        if (selectedCategory) { // Aplica filtro de categoria se houver, *após* o filtro de tópico
+        if (selectedCategory) {
             if (selectedTopic === 'topography' || selectedTopic === 'overview' || selectedTopic === 'newDiagnoses' || selectedTopic === 'mortality' || selectedTopic === 'remission') {
                 filtered = filtered.filter(p => p.topo === selectedCategory);
             } else if (selectedTopic === 'estadiamento') {
@@ -223,20 +323,15 @@ export default function DashboardCancerInterativo() {
                 filtered = filtered.filter(p => p.tipoTratamentoPrincipal === selectedCategory);
             }
         }
-
         return filtered;
     };
 
-    // Recalcula os dados agregados sempre que os filtros mudam
     const currentAggregatedData = React.useMemo(() => {
         if (!allPatients.length) return null;
         return aggregateData(getFilteredPatients());
     }, [allPatients, selectedTopic, selectedCategory]);
 
-
     // --- ECharts Options (Dinâmicas com base na seleção) ---
-
-    // Função para gerar o título dinâmico do gráfico
     const getChartTitleSuffix = () => {
         let suffix = '';
         if (selectedTopic === 'newDiagnoses') {
@@ -254,7 +349,6 @@ export default function DashboardCancerInterativo() {
         return suffix;
     };
 
-    // Distribuição por Topografia (Sempre disponível, mas filtrável)
     const getTopografiaOptions = () => ({
         tooltip: { trigger: 'item' },
         legend: { orient: 'vertical', left: 'left' },
@@ -271,7 +365,6 @@ export default function DashboardCancerInterativo() {
         }],
     });
 
-    // Distribuição por Estadiamento
     const getEstadiamentoOptions = () => ({
         tooltip: { trigger: 'item' },
         legend: { orient: 'vertical', left: 'left' },
@@ -284,7 +377,6 @@ export default function DashboardCancerInterativo() {
         }]
     });
 
-    // Distribuição por Faixa Etária
     const getFaixaEtariaOptions = () => ({
         tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
         xAxis: {
@@ -301,7 +393,6 @@ export default function DashboardCancerInterativo() {
         }]
     });
 
-    // Distribuição por Tipo de Tratamento Principal
     const getTratamentoPrincipalOptions = () => ({
         tooltip: { trigger: 'item' },
         legend: { orient: 'vertical', left: 'left' },
@@ -314,7 +405,6 @@ export default function DashboardCancerInterativo() {
         }]
     });
 
-    // Tendência de Novos Diagnósticos
     const getTendenciaDiagnosticosOptions = () => ({
         tooltip: { trigger: 'axis' },
         xAxis: { type: 'category', data: currentAggregatedData?.tendenciaNovosDiagnosticosMensal.map(d => d.mes) || [] },
@@ -328,7 +418,6 @@ export default function DashboardCancerInterativo() {
         }],
     });
 
-    // Tendência de Óbitos Mensal
     const getTendenciaObitosOptions = () => ({
         tooltip: { trigger: 'axis' },
         xAxis: { type: 'category', data: currentAggregatedData?.tendenciaObitosMensal.map(d => d.mes) || [] },
@@ -343,7 +432,6 @@ export default function DashboardCancerInterativo() {
     });
 
     // --- Click Handlers para Interação ---
-
     const handleKpiClick = (topic: typeof selectedTopic) => {
         setSelectedTopic(topic);
         setSelectedCategory(null);
@@ -358,48 +446,12 @@ export default function DashboardCancerInterativo() {
 
     // --- KPIs Principais (Visão Global) ---
     const kpiData = aggregatedData ? [
-        {
-            label: 'Total Pacientes Ativos',
-            value: aggregatedData.totalPacientesAtivos,
-            icon: <PeopleAltIcon sx={{ color: blue[500] }} />,
-            status: 'info',
-            onClick: () => handleKpiClick('overview'),
-        },
-        {
-            label: 'Novos Diagnósticos (Ano)',
-            value: aggregatedData.novosDiagnosticosAno,
-            icon: <PersonAddIcon sx={{ color: green[500] }} />,
-            status: 'online',
-            onClick: () => handleKpiClick('newDiagnoses'),
-        },
-        {
-            label: 'Óbitos por Câncer (Ano)',
-            value: aggregatedData.obitosPorCancerAno,
-            icon: <SentimentDissatisfiedIcon sx={{ color: red[500] }} />,
-            status: 'offline',
-            onClick: () => handleKpiClick('mortality'),
-        },
-        {
-            label: 'Remissão Inferida (Ano)',
-            value: aggregatedData.remissaoInferidaAno,
-            icon: <FavoriteBorderIcon sx={{ color: purple[500] }} />,
-            status: 'success',
-            onClick: () => handleKpiClick('remission'),
-        },
-        {
-            label: 'Média de Idade',
-            value: aggregatedData.mediaIdade.toFixed(1),
-            icon: <CakeIcon sx={{ color: amber[700] }} />,
-            status: 'warning',
-            onClick: () => handleKpiClick('ageGroup'),
-        },
-        {
-            label: 'Masc. / Fem.',
-            value: `${aggregatedData.distribuicaoPorGenero.Masculino} / ${aggregatedData.distribuicaoPorGenero.Feminino}`,
-            icon: <TransgenderIcon sx={{ color: grey[700] }} />,
-            status: 'info',
-            onClick: () => handleKpiClick('overview'),
-        },
+        { label: 'Total Pacientes Ativos', value: aggregatedData.totalPacientesAtivos, icon: <PeopleAltIcon sx={{ color: blue[500] }} />, status: 'info', onClick: () => handleKpiClick('overview'), },
+        { label: 'Novos Diagnósticos (Ano)', value: aggregatedData.novosDiagnosticosAno, icon: <PersonAddIcon sx={{ color: green[500] }} />, status: 'online', onClick: () => handleKpiClick('newDiagnoses'), },
+        { label: 'Óbitos por Câncer (Ano)', value: aggregatedData.obitosPorCancerAno, icon: <SentimentDissatisfiedIcon sx={{ color: red[500] }} />, status: 'offline', onClick: () => handleKpiClick('mortality'), },
+        { label: 'Remissão Inferida (Ano)', value: aggregatedData.remissaoInferidaAno, icon: <FavoriteBorderIcon sx={{ color: purple[500] }} />, status: 'success', onClick: () => handleKpiClick('remission'), },
+        { label: 'Média de Idade', value: aggregatedData.mediaIdade.toFixed(1), icon: <CakeIcon sx={{ color: amber[700] }} />, status: 'warning', onClick: () => handleKpiClick('ageGroup'), },
+        { label: 'Masc. / Fem.', value: `${aggregatedData.distribuicaoPorGenero.Masculino} / ${aggregatedData.distribuicaoPorGenero.Feminino}`, icon: <TransgenderIcon sx={{ color: grey[700] }} />, status: 'info', onClick: () => handleKpiClick('overview'), },
     ] : [];
 
     return (
@@ -427,7 +479,6 @@ export default function DashboardCancerInterativo() {
                                     : selectedTopic === 'ageGroup'
                                         ? 'Distribuição por Idade'
                                         : `Detalhes por ${selectedTopic}`}
-                {/* Botão de Voltar */}
                 {(selectedTopic !== 'overview' || selectedCategory) && (
                     <Box ml={2}>
                         <Button
@@ -443,12 +494,11 @@ export default function DashboardCancerInterativo() {
                 )}
             </Typography>
 
-
-
-            {loading || !currentAggregatedData ? (
+            {/* Adicionando a condição mapRegistered ao carregamento */}
+            {loading || !currentAggregatedData || !mapRegistered ? (
                 <Box display="flex" justifyContent="center" alignItems="center" flex={1}>
                     <CircularProgress size={60} sx={{ color: blue[500] }} />
-                    <Typography variant="h6" sx={{ ml: 2, color: '#555' }}>Carregando dados de câncer...</Typography>
+                    <Typography variant="h6" sx={{ ml: 2, color: '#555' }}>Carregando dados e mapa de câncer...</Typography>
                 </Box>
             ) : (
                 <Box display="flex" flexDirection="column" gap={2} flex={1}>
@@ -460,7 +510,7 @@ export default function DashboardCancerInterativo() {
                                 elevation={3}
                                 sx={{
                                     p: 2,
-                                    flex: '1 1 180px', // Ajuste para flexbox
+                                    flex: '1 1 180px',
                                     minWidth: 180,
                                     display: 'flex',
                                     flexDirection: 'column',
@@ -470,10 +520,10 @@ export default function DashboardCancerInterativo() {
                                     transition: 'transform 0.2s',
                                     '&:hover': { transform: 'translateY(-5px)', cursor: 'pointer' },
                                     borderLeft: `5px solid ${item.status === 'online' ? green[600] :
-                                            item.status === 'offline' ? red[600] :
-                                                item.status === 'warning' ? amber[600] :
-                                                    item.status === 'success' ? purple[600] :
-                                                        blue[600]
+                                        item.status === 'offline' ? red[600] :
+                                            item.status === 'warning' ? amber[600] :
+                                                item.status === 'success' ? purple[600] :
+                                                    blue[600]
                                         }`,
                                 }}
                                 onClick={item.onClick}
@@ -545,6 +595,19 @@ export default function DashboardCancerInterativo() {
                                     option={getTratamentoPrincipalOptions()}
                                     onEvents={{ 'click': (params) => handleChartSliceClick(params, 'treatment') }}
                                     style={{ height: '350px', width: '100%' }}
+                                />
+                            </Paper>
+                        )}
+
+                        {/* Novo Gráfico de Mapa de Franca */}
+                        {mapRegistered && ( // Renderiza o mapa apenas se o GeoJSON foi registrado com sucesso
+                            <Paper elevation={3} sx={{ flex: '1 1 100%', p: 2, borderRadius: 2, minHeight: '500px' }}>
+                                <Typography variant="h6" gutterBottom sx={{ mb: 2, color: '#444' }}>
+                                    Mapa de Casos por Região em Franca (Simulado)
+                                </Typography>
+                                <ReactECharts
+                                    option={getSPCitiesMapOptions(simulatedSPCitiesMapData)}
+                                    style={{ height: '450px', width: '100%' }}
                                 />
                             </Paper>
                         )}
