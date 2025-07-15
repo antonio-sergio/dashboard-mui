@@ -177,33 +177,32 @@ const simulatedSPCitiesMapData = [
 
 const getSPCitiesMapOptions = (mapData) => ({
   title: {
-    text: 'Distribuição de Casos de Câncer por Município (Estado de SP)',
+    text: 'Distribuição de Casos de Câncer por Município (DRS Franca)', // Título ajustado
     left: 'center',
     textStyle: {
-      color: '#E0E0E0' // Cor do título para modo escuro
+      color: '#E0E0E0'
     }
   },
   tooltip: {
     trigger: 'item',
     formatter: '{b}<br/>Casos: {c}',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Fundo do tooltip mais escuro
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     textStyle: {
-      color: '#fff' // Texto do tooltip claro
+      color: '#fff'
     }
   },
   visualMap: {
     min: 0,
-    max: 1000,
+    max: 1000, // Ajuste este valor conforme a faixa de casos na DRS Franca
     left: 'left',
     top: 'bottom',
     text: ['Alto', 'Baixo'],
     calculable: true,
     inRange: {
-      // Gradiente de cores para modo escuro: do azul muito escuro para um azul escuro vibrante
       color: ['#1A2B42', '#346590']
     },
     textStyle: {
-      color: '#E0E0E0' // Cor do texto do visualMap para modo escuro
+      color: '#E0E0E0'
     }
   },
   series: [
@@ -211,29 +210,34 @@ const getSPCitiesMapOptions = (mapData) => ({
       name: 'Casos por Município',
       type: 'map',
       map: 'Estado de São Paulo', // O nome que você registrou o GeoJSON do estado
-      roam: true,
-      center: [-47.4, -20.5],
-      zoom: 7,
+      roam: true, // Ainda permite zoom e pan do usuário
+
+      // --- AJUSTES AQUI ---
+      // Removendo 'center' e 'zoom' para que o mapa não tenha foco inicial
+      // e mostre a visualização padrão do GeoJSON carregado
+      // center: [-47.4, -20.5], // REMOVIDO
+      // zoom: 7, // REMOVIDO
+
       label: {
-        show: false, // Oculta rótulos por padrão
-        color: '#D0D0D0', // Cor do texto dos rótulos para modo escuro
-        formatter: '{b}',
-        fontSize: 9
+        show: true, // AGORA: Mostra todos os rótulos por padrão
+        color: '#D0D0D0',
+        fontSize: 9, // Ajuste o tamanho da fonte se necessário
+        formatter: '{b}' // Mostra o nome do município incondicionalmente
       },
-      emphasis: { // Estilo ao passar o mouse ou ao focar
+      emphasis: { // Estilo ao passar o mouse ainda é útil para destacar
         label: {
-          show: true, // Mostra rótulo ao passar o mouse
-          color: '#FFF', // Cor do texto do rótulo em foco para modo escuro
+          show: true,
+          color: '#FFF',
           fontSize: 12
         },
         itemStyle: {
-          areaColor: '#607D8B' // Cor de destaque ao passar o mouse (um cinza-azulado escuro)
+          areaColor: '#607D8B'
         }
       },
       itemStyle: {
-        borderColor: '#555', // Cor da borda entre os municípios (um cinza mais escuro)
+        borderColor: '#555',
         borderWidth: 0.8,
-        areaColor: '#2C3E50' // Cor padrão de preenchimento dos municípios (azul petróleo escuro)
+        areaColor: '#2C3E50'
       },
       data: mapData,
     }
