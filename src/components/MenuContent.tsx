@@ -34,6 +34,7 @@ const monitorRoutes = [
   { text: 'Monitor 4', icon: <AssignmentRoundedIcon />, path: '/monitor4' },
   { text: 'Monitor 5', icon: <SettingsRoundedIcon />, path: '/monitor5' },
   { text: 'Monitor 6', icon: <InfoRoundedIcon />, path: '/monitor6' },
+  { text: 'RHC', icon: <InfoRoundedIcon />, path: '/rhc' },
 ];
 
 export default function MenuContent() {

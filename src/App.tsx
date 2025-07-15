@@ -7,6 +7,7 @@ import Monitor5 from './pages/monitor5/Monitor5';
 import Monitor6 from './pages/monitor6/Monitor6';
 import Monitor4 from './pages/monitor4/Monitor4';
 import Monitor3 from './pages/monitor3/Monitor3';
+import RHC from './pages/rhc/RHC';
 
 
 export default function App() {
@@ -21,6 +22,7 @@ export default function App() {
         <Route path="/monitor4" element={<Dashboard><Monitor4 /></Dashboard>} />
         <Route path="/monitor5" element={<Dashboard><Monitor5 /></Dashboard>} />
         <Route path="/monitor6" element={<Dashboard><Monitor6 /></Dashboard>} />
+        <Route path="/rhc" element={<Dashboard><RHC /></Dashboard>} />
         
 
       </Routes>
